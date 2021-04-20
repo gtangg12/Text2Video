@@ -5,7 +5,6 @@
 *.out
 *.synctex.gz
 *.suo
-*__pycache__
 *.idea
 *.ipynb_checkpoints
 *.pickle
@@ -16,3 +15,15 @@
 *.toc
 *.wav
 *.sh
+__pycache__
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
