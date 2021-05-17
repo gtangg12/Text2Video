@@ -15,7 +15,7 @@
 *.toc
 *.wav
 *.sh
-__pycache__
+__pycache__/
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -28,5 +28,5 @@ compile_commands.json
 CTestTestfile.cmake
 _deps
 main
-obama_addresses
-face_landmark_data
+obama_addresses/
+image_data/
