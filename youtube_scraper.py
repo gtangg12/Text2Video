@@ -15,7 +15,7 @@ def scrape_video(url):
     video_name = f'{content_id}_video'
 
     audio = content.streams.filter(type='audio', file_extension='mp4', abr="128kbps")[0]
-    video = content.streams.filter(type='video', file_extension='mp4', resolution='1080p')[0]
+    video = content.streams.filter(type='video', file_extension='mp4', resolution='720p')[0]
     audio.download(output_path=output_dir, filename=audio_name)
     video.download(output_path=output_dir, filename=video_name)
 
@@ -27,9 +27,9 @@ def scrape_video(url):
     ffmpeg.output(audio, video, f'{output_dir}/{content_id}.mp4').run()
 
     # clean output dir
-    os.remove(audio_path)
-    os.remove(video_path)
+    #os.remove(audio_path)
+    #os.remove(video_path)
 
-sample_url = 'https://www.youtube.com/watch?v=2AFpAATHXtc'
+sample_url = 'https://www.youtube.com/watch?v=xAAmF3H0-ek'
 
 scrape_video(sample_url)
