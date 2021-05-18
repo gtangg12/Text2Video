@@ -27,11 +27,21 @@ def average_landmarks(landmarks, iter):
     ya /= len(iter)
     return int(xa), int(ya)
 
+def expand_rect(rect):
+    #expands face detector results to fit face
+    return dlib.rectangle(
+        rect.left() - rect.width() // 3,
+        rect.top() - rect.height() * 2 // 3,
+        rect.right() + rect.width() // 3,
+        rect.bottom() + rect.height() // 3,
+    )
+
 def landmarks_from_image(img, landmark_grps):
-    face = face_detector(img, 1)
-    if not face:
-        return np.zeros((5,2))
-    face = face[0] #get first face using [0]
+    faces = face_detector(img, 1)
+    if not faces:
+        return np.zeros((5,2)), None  #need to replace hardcoded value
+    face = max(faces, key=lambda f: f.area())
+    #face = dlib.rectangle(480, 0, 800, 360)
 
     all_landmarks = []
     landmarks = landmark_detector(img, face)
@@ -50,8 +60,7 @@ def process_vid_part(process_id):
     all_landmarks = []
     for _ in range(frame_jumps):
         frame = cap.read()[1]
-        landmarks_from_image(frame[:,:,::-1], landmark_grps)
-        all_landmarks.append(landmarks_from_image)
+        all_landmarks.append(landmarks_from_image(frame[:,:,::-1], landmark_grps))
     cap.release()
 
     return all_landmarks
