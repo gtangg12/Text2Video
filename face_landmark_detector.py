@@ -2,7 +2,7 @@ import numpy as np
 import cv2 as cv
 import dlib
 
-data_dir = 'face_landmark_data/'
+data_dir = './face_landmark_data/'
 
 face_detector = dlib.get_frontal_face_detector()
 landmark_detector = dlib.shape_predictor(f'{data_dir}/shape_predictor_68_face_landmarks.dat')
