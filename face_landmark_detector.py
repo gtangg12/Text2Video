@@ -16,8 +16,8 @@ print(os.path.join( \
     os.path.dirname(__file__), data_dir, 'shape_predictor_68_face_landmarks.dat'))
 # make 5 landmarks from 68 landmarks
 # left_eye, right_eye, nose, left_mouth_corner, right_mouth_corner
-FIVE_LANDMARKS = [range(36, 42), range(42, 48), [30, 33], [48, 60], [54, 64]]
-LIP_LANDMARKS = map(lambda x: [x], range(49, 68))
+FIVE_LANDMARKS = [list(range(36, 42)), list(range(42, 48)), [30, 33], [48, 60], [54, 64]]
+LIP_LANDMARKS = list(map(lambda x: [x], range(48, 68)))
 
 def average_landmarks(landmarks, iters):
     xa, ya = 0, 0
@@ -39,10 +39,10 @@ def expand_rect(rect):
         rect.bottom() + rect.height() // 3,
     )
 
-def landmarks_from_image(img, landmark_grps):
+def landmarks_from_image(img, landmark_grps):#, name = None):
     faces = face_detector(img, 1)
     if not faces:
-        return np.zeros((5,2))  #need to replace hardcoded value
+        return np.zeros((num_landmarks,2))  #need to replace hardcoded value
     face = max(faces, key=lambda f: f.area())
     #face = dlib.rectangle(480, 0, 800, 360)
 
@@ -53,6 +53,7 @@ def landmarks_from_image(img, landmark_grps):
         x, y = average_landmarks(landmarks, iters)
         # draw circle on image at landmark
         #cv.circle(img, (x, y), 3, (255, 255, 0), -1)
+        #cv.imwrite(name, img)
         all_landmarks.append((x, y))
     return all_landmarks
 
@@ -73,8 +74,30 @@ def landmarks_from_video():
         return p.map(process_vid_part, range(num_processes))
     #return list(map(process_vid_part, range(num_processes)))
 
+def process_directory_part(process_id):
+    offset = frame_jumps * process_id
+    all_landmarks = []
+    for idx in tqdm(range(frame_jumps), position=process_id):
+        frame = cv.imread(root_path + str(offset + idx) + '.jpg')
+        all_landmarks.append(landmarks_from_image(frame[:,:,::-1], landmark_grps))
+    return all_landmarks
+
+def landmarks_from_dir():
+    with Pool(num_processes) as p:
+        return p.map(process_directory_part, range(num_processes))
+
 if __name__ == '__main__':
     
+    num_processes = 7
+    num_frames = 17139
+    frame_jumps = num_frames // num_processes
+    root_path = '/media/william/DATA/6869/xAAmF3H0-ek/frame_'
+    landmark_grps = FIVE_LANDMARKS + LIP_LANDMARKS
+    num_landmarks = len(landmark_grps)
+    np.save('xAAmF3H0-ek_landmarks_pooled_fromdir', np.array(landmarks_from_dir()))
+
+
+    """
     vid_path = './obama_addresses/xAAmF3H0-ek_video.mp4'
 
     cap = cv.VideoCapture(vid_path)
@@ -88,8 +111,10 @@ if __name__ == '__main__':
 
     np.save('xAAmF3H0-ek_landmarks_pooled', np.array(landmarks_from_video()))
     """
-    for i in range(3):
-        img = cv.imread(f'./face_landmark_data/image_data/test{i+1}.jpg')
-        lm = landmarks_from_image(img, FIVE_LANDMARKS)
-        pd.DataFrame(lm).to_csv(f'test{i+1}.txt', sep=' ', index=False, header=False)
+
+    """
+    for i in range(1):
+        img = cv.imread(f'./face_landmark_data/image_data/output_william.png')
+        lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/william_lm.jpg')
+        pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
     """
