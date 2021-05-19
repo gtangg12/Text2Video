@@ -98,7 +98,7 @@ if __name__ == '__main__':
     landmark_grps = FIVE_LANDMARKS + LIP_LANDMARKS
     num_landmarks = len(landmark_grps)
     np.save('xAAmF3H0-ek_landmarks_frontalized', np.array(landmarks_from_dir()))
-    
+    '''
 
     """
     vid_path = './obama_addresses/xAAmF3H0-ek_video.mp4'
@@ -128,10 +128,15 @@ if __name__ == '__main__':
     path = 'frontalized'
     files = [f for f in listdir(path) if isfile(join(path, f))]
     for f in files:
-        print(path + '/' + f)
+        #print(path + '/' + f)
         img = cv.imread(path + '/' + f)
+        num = int(f.split('_')[-1].split('.')[0])
+        #if num <= 16937:
+        #    continue
+        #print(num)
+        #print(f.split('_')[-1].split('.')[0])
         #cv.imshow('Frame', img)
         #cv.waitKey(0)
         lm = landmarks_from_image(img, LIP_LANDMARKS)
-        pd.DataFrame(lm).to_csv(path + '/' + f + '_' + 'mouth_landmarks.csv', sep=' ', index=False, header=False)
-    '''
+        print(path + '/mouth_landmarks_' + f.split('_')[-1].split('.')[0] + '.csv')
+        pd.DataFrame(lm).to_csv(path + '/mouth_landmarks_' + f.split('_')[-1].split('.')[0] + '.csv', sep=' ', index=False, header=False)
