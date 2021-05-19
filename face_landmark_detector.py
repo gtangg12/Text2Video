@@ -39,8 +39,8 @@ def expand_rect(rect):
         rect.bottom() + rect.height() // 3,
     )
 
-def landmarks_from_image(img, landmark_grps):#, name = None):
-    faces = face_detector(img, 1)
+def landmarks_from_image(img, landmark_grps, name = None):
+    faces = face_detector(img)
     if not faces:
         return np.zeros((num_landmarks,2))  #need to replace hardcoded value
     face = max(faces, key=lambda f: f.area())
@@ -52,9 +52,9 @@ def landmarks_from_image(img, landmark_grps):#, name = None):
     for iters in landmark_grps:
         x, y = average_landmarks(landmarks, iters)
         # draw circle on image at landmark
-        #cv.circle(img, (x, y), 3, (255, 255, 0), -1)
-        #cv.imwrite(name, img)
+    #    cv.circle(img, (x, y), 3, (0, 255, 255), -1)
         all_landmarks.append((x, y))
+    #cv.imwrite(name, img)
     return all_landmarks
 
 def process_vid_part(process_id):
@@ -64,7 +64,7 @@ def process_vid_part(process_id):
     all_landmarks = []
     for _ in tqdm(range(frame_jumps), position=process_id):
         frame = cap.read()[1]
-        all_landmarks.append(landmarks_from_image(frame[:,:,::-1], landmark_grps))
+        all_landmarks.append(landmarks_from_image(frame, landmark_grps)) #[:,:,::-1]?
     cap.release()
 
     return all_landmarks
@@ -75,11 +75,11 @@ def landmarks_from_video():
     #return list(map(process_vid_part, range(num_processes)))
 
 def process_directory_part(process_id):
-    offset = frame_jumps * process_id
+    offset = frame_jumps * process_id + glob_start
     all_landmarks = []
     for idx in tqdm(range(frame_jumps), position=process_id):
         frame = cv.imread(root_path + str(offset + idx) + '.jpg')
-        all_landmarks.append(landmarks_from_image(frame[:,:,::-1], landmark_grps))
+        all_landmarks.append(landmarks_from_image(frame, landmark_grps)) #[:,:,::-1]?
     return all_landmarks
 
 def landmarks_from_dir():
@@ -89,13 +89,14 @@ def landmarks_from_dir():
 if __name__ == '__main__':
     
     num_processes = 7
-    num_frames = 17139
+    num_frames = 16950
+    glob_start = 12
     frame_jumps = num_frames // num_processes
-    root_path = '/media/william/DATA/6869/xAAmF3H0-ek/frame_'
+    root_path = '/media/william/DATA/6869/frontalized/output_frame_'
     landmark_grps = FIVE_LANDMARKS + LIP_LANDMARKS
     num_landmarks = len(landmark_grps)
-    np.save('xAAmF3H0-ek_landmarks_pooled_fromdir', np.array(landmarks_from_dir()))
-
+    np.save('xAAmF3H0-ek_landmarks_frontalized', np.array(landmarks_from_dir()))
+    
 
     """
     vid_path = './obama_addresses/xAAmF3H0-ek_video.mp4'
@@ -113,8 +114,8 @@ if __name__ == '__main__':
     """
 
     """
-    for i in range(1):
-        img = cv.imread(f'./face_landmark_data/image_data/output_william.png')
-        lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/william_lm.jpg')
-        pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
+    for i in range(17, 90):
+        img = cv.imread(f'./face_landmark_data/image_data/output_frame_{i}.jpg')
+        lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/output_frame_{i}_lm.jpg')
+        #pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
     """
