@@ -16,12 +16,10 @@
 *.wav
 *.sh
 __pycache__/
-CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
 CMakeScripts
 Testing
-Makefile
 cmake_install.cmake
 install_manifest.txt
 compile_commands.json
@@ -32,3 +30,4 @@ obama_addresses/
 image_data/
 outputs/
 face_landmark_data/image_data/
+#frontalized/
