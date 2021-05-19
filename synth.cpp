@@ -181,7 +181,8 @@ vector<CandidateFrame*> load_data(string path) {
    return ret;
 }
 
-int main() {
+int main() {  
+
    string path = "frontalized";
    vector<CandidateFrame*> video = load_data(path);
    /*
