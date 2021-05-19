@@ -14,6 +14,7 @@ landmark_detector = dlib.shape_predictor(os.path.join( \
     os.path.dirname(__file__), data_dir, 'shape_predictor_68_face_landmarks.dat'))
 print(os.path.join( \
     os.path.dirname(__file__), data_dir, 'shape_predictor_68_face_landmarks.dat'))
+
 # make 5 landmarks from 68 landmarks
 # left_eye, right_eye, nose, left_mouth_corner, right_mouth_corner
 FIVE_LANDMARKS = [list(range(36, 42)), list(range(42, 48)), [30, 33], [48, 60], [54, 64]]
@@ -87,7 +88,8 @@ def landmarks_from_dir():
         return p.map(process_directory_part, range(num_processes))
 
 if __name__ == '__main__':
-    
+    pass
+    '''
     num_processes = 7
     num_frames = 16950
     glob_start = 12
@@ -114,8 +116,22 @@ if __name__ == '__main__':
     """
 
     """
-    for i in range(17, 90):
-        img = cv.imread(f'./face_landmark_data/image_data/output_frame_{i}.jpg')
-        lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/output_frame_{i}_lm.jpg')
-        #pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
+    for i in range(1):
+        img = cv.imread(f'./face_landmark_data/image_data/output_william.png')
+        lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/william_lm.jpg')
+        pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
     """
+
+    from os import listdir
+    from os.path import isfile, join
+
+    path = 'frontalized'
+    files = [f for f in listdir(path) if isfile(join(path, f))]
+    for f in files:
+        print(path + '/' + f)
+        img = cv.imread(path + '/' + f)
+        #cv.imshow('Frame', img)
+        #cv.waitKey(0)
+        lm = landmarks_from_image(img, LIP_LANDMARKS)
+        pd.DataFrame(lm).to_csv(path + '/' + f + '_' + 'mouth_landmarks.csv', sep=' ', index=False, header=False)
+    '''
