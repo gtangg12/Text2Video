@@ -29,5 +29,7 @@ main
 obama_addresses/
 image_data/
 outputs/
+output/
 face_landmark_data/image_data/
 frontalized/
+frontalized_small/
