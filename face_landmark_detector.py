@@ -88,17 +88,19 @@ def landmarks_from_dir():
         return p.map(process_directory_part, range(num_processes))
 
 if __name__ == '__main__':
-    pass
-    '''
-    num_processes = 7
-    num_frames = 16950
-    glob_start = 12
+    
+    num_processes = 4
+    num_frames = 5800
+    glob_start = 303
     frame_jumps = num_frames // num_processes
-    root_path = '/media/william/DATA/6869/frontalized/output_frame_'
+    root_path = '/media/william/DATA/6869/output/frontalized/nHREBzHqFTQ/output_frame_'
     landmark_grps = FIVE_LANDMARKS + LIP_LANDMARKS
     num_landmarks = len(landmark_grps)
-    np.save('xAAmF3H0-ek_landmarks_frontalized', np.array(landmarks_from_dir()))
+    np.save('nHREBzHqFTQ_landmarks_frontalized', np.array(landmarks_from_dir()))
     
+    #lm = np.load('nHREBzHqFTQ_landmarks.npy').reshape(-1, 25, 2)
+    #print(lm[303])
+    #print(lm[6116])
 
     """
     vid_path = './obama_addresses/xAAmF3H0-ek_video.mp4'
@@ -121,7 +123,7 @@ if __name__ == '__main__':
         lm = landmarks_from_image(img, LIP_LANDMARKS, name=f'outputs/images/william_lm.jpg')
         pd.DataFrame(lm).to_csv(f'outputs/landmarks/william_outlip.txt', sep=' ', index=False, header=False)
     """
-
+    """
     from os import listdir
     from os.path import isfile, join
 
@@ -134,4 +136,4 @@ if __name__ == '__main__':
         #cv.waitKey(0)
         lm = landmarks_from_image(img, LIP_LANDMARKS)
         pd.DataFrame(lm).to_csv(path + '/' + f + '_' + 'mouth_landmarks.csv', sep=' ', index=False, header=False)
-    '''
+    """
