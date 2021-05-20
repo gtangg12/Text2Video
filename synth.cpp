@@ -98,6 +98,8 @@ Mat weighted_median(vector<CandidateFrame*> candidates, vector<CandidateFrame*> 
   int h = candidates[0]->image.rows, w = candidates[0]->image.cols, ch = 3;
   Mat output(h, w, CV_8UC3, cv::Scalar(0, 0, 0));
 
+  return;
+
   for (int c = 0; c < 3; c++) {
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {

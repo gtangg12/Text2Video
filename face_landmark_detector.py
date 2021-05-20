@@ -88,7 +88,7 @@ def landmarks_from_dir():
         return p.map(process_directory_part, range(num_processes))
 
 if __name__ == '__main__':
-    
+    '''
     num_processes = 4
     num_frames = 5800
     glob_start = 303
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     landmark_grps = FIVE_LANDMARKS + LIP_LANDMARKS
     num_landmarks = len(landmark_grps)
     np.save('nHREBzHqFTQ_landmarks_frontalized', np.array(landmarks_from_dir()))
-    
+    '''
     #lm = np.load('nHREBzHqFTQ_landmarks.npy').reshape(-1, 25, 2)
     #print(lm[303])
     #print(lm[6116])
