@@ -14,7 +14,7 @@ using cv::Mat;
 using cv::Point2f;
 using namespace std;
 
-const int NUM_LANDMARKS = 20;
+const int NUM_LANDMARKS = 18;
 
 class CandidateFrame {
 public:
@@ -92,7 +92,7 @@ vector<double> compute_weights(vector<CandidateFrame*> candidates, vector<Candid
 
 // solve with https://ita.skanev.com/09/problems/02.html (post-office location problem)
 Mat weighted_median(vector<CandidateFrame*> candidates, vector<CandidateFrame*> video,
-    vector<Vec2d> &target, double alpha) {
+    vector<Vec2d> &target, Mat &mask, double alpha) {
   vector<double> weights = compute_weights(candidates, video, target, alpha);
 
   int h = candidates[0]->image.rows, w = candidates[0]->image.cols, ch = 3;
@@ -101,6 +101,10 @@ Mat weighted_median(vector<CandidateFrame*> candidates, vector<CandidateFrame*> 
   for (int c = 0; c < 3; c++) {
     for (int i = 0; i < h; i++) {
       for (int j = 0; j < w; j++) {
+
+        if (mask.at<uchar>(i, j) == 0) {
+           continue;
+        }
 
         vector<pair<double, double>> pixel_params; // pixel value, weight of candidate
         for (int k = 0; k < candidates.size(); k++) {
@@ -189,10 +193,10 @@ vector<vector<Vec2d>> targets;
 void load_targets(string path) {
    std::ifstream fin;
    fin.open(path);
-   vector<Vec2d> target;
-   for (int frame = 7543; frame <= 8484; frame++) {
+   for (int frame = 0; frame < 3003; frame++) {
+      vector<Vec2d> target;
       double x, y;
-      for (int i = 0; i < 20; i++) {
+      for (int i = 0; i < 18; i++) {
          fin >> x >> y;
          target.push_back(Vec2d(y, x));
       }
@@ -202,22 +206,29 @@ void load_targets(string path) {
 
 int main() {
    load_video("frontalized");
-   load_targets("downsample_preds.csv");
+   load_targets("downsample_preds_rts.csv");
+   Mat mask = cv::imread("mask.png", CV_8U);
+
    std::cout << "Data Loaded!" << std::endl;
+
    int n = 15;
    for (int i = 0; i < targets.size(); i++) {
       if (i % 10 == 0) {
          std::cout << "Processed frames up to < " << i << std::endl;
       }
+      Mat output(224, 224, CV_8UC3, cv::Scalar(0, 0, 0));
       vector<CandidateFrame*> candidates = top_n_candidates(n, targets[i], video);
 
-      Mat output = weighted_median(candidates, video, targets[i], 0.9);
+      output = weighted_median(candidates, video, targets[i], mask, 0.9);
+
 
       // overlay lip fidicials
+      /*
       for (int j = 0; j < targets[i].size(); j++) {
          //std::cout << targets[i][j][0] << ' ' << targets[i][j][1] << std::endl;
-         cv::circle(output, cv::Point(targets[i][j][1], targets[i][j][0]), 3, cv::Scalar(255,255,255), -1);
-      }
+         cv::circle(output, cv::Point(targets[i][j][1], targets[i][j][0]), 1, cv::Scalar(255,255,255), -1);
+      }*/
+      //std::cout << ' ' << std::endl;
 
       //cv::imshow("Frame", output);
       //cv::waitKey(0);
