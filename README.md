@@ -11,8 +11,3 @@ which generates the Makefile. For compilations, run
 ```
 make
 ```
-
-To run the C++ component
-```
-./main
-```
