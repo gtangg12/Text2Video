@@ -1,0 +1,2 @@
+## Code Modified From A Public Repo
+This folder Contains the modified code from the public github repo available on https://github.com/microsoft/Deep3DFaceReconstruction. In order to run the 3D alignment algorithm, please clone the Deep 3D Face Reconstruction repo in a separate folder and replace the corresponding .py files. Please also move frontalize.py into the other repo.
